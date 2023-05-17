@@ -27,11 +27,7 @@ const gameBoard = ( () => {
         }
     }
 
-    const printBoard = () => { // wont be needing this later on
-        board.forEach((cell) => {console.log(cell)})
-    }
-
-    return {getBoard, markCell, printBoard}
+    return {getBoard, markCell}
 })();
 
 const Player = (marker) => {
@@ -51,19 +47,36 @@ const gameController = (() => {
 
     const getActivePl = () => current_pl
 
-    const printNewRound = () => {
-        gameBoard.printBoard()
-        console.log(`${getActivePl().getMarker()}'s turn`)
+    const winCondition = () => {
+        const winningCombos = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6]
+        ]
+        for (const combo of winningCombos) {
+            const [a, b, c] = combo
+            const board = gameBoard.getBoard()
+            if (board[a] !== '' && board[a] === board[b] && board[a] === board[c]){
+                return true
+            }
+        }
+        return false
     }
 
     const playRound = (cell) => {
         gameBoard.markCell(cell, getActivePl().getMarker())
-        console.log(`${getActivePl().getMarker()} has marked ${cell}`)
-        
-        // check for game win/draw condition
+
+        // check for game win condition, need to descide how to check draw condition, we are checking if board full in mark board function
+        if (winCondition()) {
+            console.log(`victory for ${getActivePl().getMarker()}`)
+        }
 
         switchPl()
-        printNewRound()
     }
 
     return {playRound, getActivePl} // need activepl for UI
@@ -108,5 +121,3 @@ const screenController = (() => {
 
     // we are not returning anything as everything is used up inside screenController
 })()
-
-screenController()
