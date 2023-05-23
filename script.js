@@ -4,21 +4,7 @@ const gameBoard = ( () => {
     
     const getBoard = () => board // will be used by UI module to render board
 
-    const boardFull = () => { // return true if board is full
-        for (let i = 0; i < board.length; i++) {
-            const cell = board[i];
-            if (cell === '') {
-                return false
-            }
-        }
-        return true
-    }
-
     const markCell = (cell, marker) => {
-
-        if (boardFull()) {  // check if board full
-            return
-        }
 
         if (board[cell] === '') {
             board[cell] = marker
@@ -68,13 +54,27 @@ const gameController = (() => {
         return false
     }
 
+    const boardFull = () => { 
+        const board = gameBoard.getBoard()  // return true if board is full
+        for (let i = 0; i < board.length; i++) {
+            const cell = board[i];
+            if (cell === '') {
+                return false
+            }
+        }
+        return true
+    }
+
     const playRound = (cell) => {
         gameBoard.markCell(cell, getActivePl().getMarker())
-
-        // check for game win condition, need to descide how to check draw condition, we are checking if board full in mark board function
+        
         if (winCondition()) {
             console.log(`victory for ${getActivePl().getMarker()}`)
         }
+        
+        else if (boardFull()) {
+            console.log('board full, draw')
+        }  
 
         switchPl()
     }
