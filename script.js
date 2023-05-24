@@ -8,8 +8,9 @@ const gameBoard = ( () => {
 
         if (board[cell] === '') {
             board[cell] = marker
+            return 'marked'
         } else {
-            return; // stop execution if try to mark a marked cell
+            return 'not marked';
         }
     }
 
@@ -66,7 +67,9 @@ const gameController = (() => {
     }
 
     const playRound = (cell) => {
-        gameBoard.markCell(cell, getActivePl().getMarker())
+        let markResult = gameBoard.markCell(cell, getActivePl().getMarker()) // we can make it return same logic as win/draw case
+
+        if (markResult === 'not marked') return 'invalid cell'
         
         if (winCondition()) {
             return 'win'// so that player switch no hoppen after win or draw also return help us display message in div
@@ -87,8 +90,9 @@ const screenController = (() => {
     const playerTurnDiv = document.querySelector('.turn')
     const resultDiv = document.querySelector('.result')
 
-    const updateScreen = (roundResult = '') => {
+    const updateScreen = (roundResult) => {
         boardDiv.textContent = '' // clearing the game board
+        resultDiv.textContent = '' // clearing result div
 
         const board = gameBoard.getBoard() // get latest board version and active player
         const current_pl = gameController.getActivePl()
@@ -110,6 +114,9 @@ const screenController = (() => {
 
         } else if (roundResult === 'draw') {
             resultDiv.textContent = `draw`
+
+        } else if (roundResult === 'invalid cell') {
+            resultDiv.textContent = 'That cell is already marked'
         }
 
     }
@@ -121,7 +128,7 @@ const screenController = (() => {
 
         let roundResult = gameController.playRound(clickedCellIndex) // maybe display messages on div based on what playround returns
     
-        updateScreen(roundResult) // we can give update screen inputs and display draw/win from inside update-screen using the argument given, writing if else and updating div here makes less sense
+        updateScreen(roundResult) // update the creen based on round result
     }
 
     boardDiv.addEventListener('click', respondToClick) // listen to a click
