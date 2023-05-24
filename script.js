@@ -69,11 +69,11 @@ const gameController = (() => {
         gameBoard.markCell(cell, getActivePl().getMarker())
         
         if (winCondition()) {
-            console.log(`victory for ${getActivePl().getMarker()}`)
+            return 'win'// so that player switch no hoppen after win or draw also return help us display message in div
         }
         
         else if (boardFull()) {
-            console.log('board full, draw')
+            return 'draw'
         }  
 
         switchPl()
@@ -85,8 +85,9 @@ const gameController = (() => {
 const screenController = (() => {
     const boardDiv = document.querySelector('.board')
     const playerTurnDiv = document.querySelector('.turn')
+    const resultDiv = document.querySelector('.result')
 
-    const updateScreen = () => {
+    const updateScreen = (roundResult = '') => {
         boardDiv.textContent = '' // clearing the game board
 
         const board = gameBoard.getBoard() // get latest board version and active player
@@ -104,6 +105,13 @@ const screenController = (() => {
             boardDiv.appendChild(cellButton)
         })
 
+        if (roundResult === 'win') {
+            resultDiv.textContent = ` ${current_pl.getMarker()} has won `
+
+        } else if (roundResult === 'draw') {
+            resultDiv.textContent = `draw`
+        }
+
     }
 
     const respondToClick = (e) => { // function responding to a click event
@@ -111,8 +119,9 @@ const screenController = (() => {
 
         if (!clickedCellIndex) return // if user click elsewhere apart from the board cell stop execution
 
-        gameController.playRound(clickedCellIndex)
-        updateScreen()
+        let roundResult = gameController.playRound(clickedCellIndex) // maybe display messages on div based on what playround returns
+    
+        updateScreen(roundResult) // we can give update screen inputs and display draw/win from inside update-screen using the argument given, writing if else and updating div here makes less sense
     }
 
     boardDiv.addEventListener('click', respondToClick) // listen to a click
