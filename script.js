@@ -89,6 +89,7 @@ const screenController = (() => {
     const boardDiv = document.querySelector('.board')
     const playerTurnDiv = document.querySelector('.turn')
     const resultDiv = document.querySelector('.result')
+    const restartButton = document.querySelector('.hidden')
 
     const updateScreen = (roundResult) => {
         boardDiv.textContent = '' // clearing the game board
@@ -129,6 +130,11 @@ const screenController = (() => {
         let roundResult = gameController.playRound(clickedCellIndex) // maybe display messages on div based on what playround returns
     
         updateScreen(roundResult) // update the creen based on round result
+
+        if (roundResult === 'win' || roundResult === 'draw') {  // very hacky logically less sense
+            boardDiv.removeEventListener('click', respondToClick)
+            restartButton.classList.toggle('hidden') // show restartbutton on game completion
+        }
     }
 
     boardDiv.addEventListener('click', respondToClick) // listen to a click
