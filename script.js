@@ -89,7 +89,6 @@ const screenController = (() => {
     const boardDiv = document.querySelector('.board')
     const playerTurnDiv = document.querySelector('.turn')
     const resultDiv = document.querySelector('.result')
-    const restartButton = document.querySelector('.hidden')
 
     const updateScreen = (roundResult) => {
         boardDiv.textContent = '' // clearing the game board
@@ -133,7 +132,6 @@ const screenController = (() => {
 
         if (roundResult === 'win' || roundResult === 'draw') {  // very hacky logically less sense
             boardDiv.removeEventListener('click', respondToClick)
-            restartButton.classList.toggle('hidden') // show restartbutton on game completion
         }
     }
 
@@ -143,3 +141,7 @@ const screenController = (() => {
 
     // we are not returning anything as everything is used up inside screenController
 })()
+
+function refreshPage(){
+    window.location.reload();
+} 
